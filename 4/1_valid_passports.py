@@ -6,8 +6,8 @@ Github: https://github.com/nrupatunga
 Description: find valid passports
 """
 import fileinput
-from rich import print
 
+from rich import print
 
 required_fields = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
 
@@ -49,4 +49,3 @@ if len(passport_data):
 
 
 print(f'Answer: {num_valid}')
-
