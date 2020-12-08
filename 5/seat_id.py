@@ -54,7 +54,18 @@ def decode_col(seat_col, dbg=False):
     return max(start, end)
 
 
-Answers = []
+def find_my_seat(seat_ids):
+    seat_ids = sorted(seat_ids)
+    all_seat_ids = set(list(range(seat_ids[0], seat_ids[-1] + 1)))
+    seat_ids = set(seat_ids)
+    my_seat_id = all_seat_ids - seat_ids
+    my_seat_id = list(my_seat_id)[0]
+
+    return my_seat_id
+
+
+part_1_ans = []
+
 for line in fileinput.input('./input.txt'):
     seat = line.rstrip()
     seat_7 = seat[0:7]
@@ -62,6 +73,8 @@ for line in fileinput.input('./input.txt'):
     row = decode_row(seat_7)
     col = decode_col(seat_3)
     seat_id = row * 8 + col
-    Answers.append(seat_id)
+    part_1_ans.append(seat_id)
 
-print(f'Answer: {max(Answers)}')
+my_seat_id = find_my_seat(part_1_ans)
+print(f'Answer-1: {max(part_1_ans)}')
+print(f'Answer-2: {my_seat_id}')
