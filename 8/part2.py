@@ -21,7 +21,6 @@ def find_acc_val(data, visited, accumulator=0):
             status = False
             break
 
-
         inst, val = data[idx].split()
         val = int(val)
         visited[idx] = 1
@@ -42,7 +41,7 @@ if __name__ == "__main__":
     jmp_loc = []
     for i, line in enumerate(fileinput.input('./input.txt')):
         data.append(line.rstrip())
-        inst, _= line.rstrip().split()
+        inst, _ = line.rstrip().split()
         if inst == 'jmp':
             jmp_loc.append(i)
 

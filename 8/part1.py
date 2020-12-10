@@ -27,6 +27,7 @@ def find_acc_val(data, visited, accumulator=0):
 
     return accumulator
 
+
 if __name__ == "__main__":
     ans = 0
     data = []
