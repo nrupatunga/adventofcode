@@ -9,6 +9,7 @@ Description: how many bags should shiny gold bag contain
 import fileinput
 import re
 from collections import defaultdict
+from time import time
 
 
 def count_individual_bags(s):
@@ -63,6 +64,7 @@ def count_all_bags(bag_dict, bags, scale=1):
 
 
 if __name__ == "__main__":
+    start = time()
     ans = 0
     data = []
     for i, line in enumerate(fileinput.input('./input.txt')):
@@ -71,3 +73,4 @@ if __name__ == "__main__":
     bag_dict = get_bag_dict(data)
     ans = count_all_bags(bag_dict, ['shiny gold'])
     print(f'Answer: {ans}')
+    print(f'Total Time (ms): {(time() - start) * 1000}')
