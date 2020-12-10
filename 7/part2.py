@@ -35,7 +35,7 @@ def get_bag_dict(data):
         children = bags[1].split(',')
         children = [count_individual_bags(child) for child in children]
         bag_dict[parent] = children
-return bag_dict
+    return bag_dict
 
 
 def get_curr_list(bag_dict, s):
