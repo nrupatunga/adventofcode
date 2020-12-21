@@ -28,11 +28,12 @@ def get_input_in_array(input_txt):
     return data
 
 
-def find_indices(rows, cols):
+def find_indices(rows, cols, w=0):
+    assert (w != 0)
     min_len = min(rows.size, cols.size)
     rows = rows[0: min_len]
     cols = cols[0: min_len]
-    indices = rows * 98 + cols
+    indices = rows * w + cols
     return indices
 
 
@@ -42,7 +43,7 @@ def check_diag_tl(data, i, j):
     try:
         rows = np.arange(i - 1, -1, -1)
         cols = np.arange(j - 1, -1, -1)
-        indices = find_indices(rows, cols)
+        indices = find_indices(rows, cols, w=w)
     except ValueError:
         return None
 
@@ -60,7 +61,7 @@ def check_diag_tr(data, i, j):
     try:
         rows = np.arange(i - 1, -1, -1)
         cols = np.arange(j + 1, w)
-        indices = find_indices(rows, cols)
+        indices = find_indices(rows, cols, w=w)
     except ValueError:
         return None
 
@@ -78,7 +79,7 @@ def check_diag_br(data, i, j):
     try:
         rows = np.arange(i + 1, h)
         cols = np.arange(j + 1, w)
-        indices = find_indices(rows, cols)
+        indices = find_indices(rows, cols, w=w)
     except ValueError:
         return None
 
@@ -96,7 +97,7 @@ def check_diag_bl(data, i, j):
     try:
         rows = np.arange(i + 1, h)
         cols = np.arange(j - 1, -1, -1)
-        indices = find_indices(rows, cols)
+        indices = find_indices(rows, cols, w=w)
     except ValueError:
         return None
 
@@ -112,7 +113,7 @@ def check_bottom(data, i, j):
     h, w = data.shape
 
     try:
-        indices = np.arange(i + 1, h) * 10 + j
+        indices = np.arange(i + 1, h) * w + j
     except ValueError:
         return None
 
@@ -127,7 +128,7 @@ def check_bottom(data, i, j):
 def check_top(data, i, j):
     h, w = data.shape
     try:
-        indices = np.arange(i - 1, -1, -1) * 10 + j
+        indices = np.arange(i - 1, -1, -1) * w + j
     except ValueError:
         return None
 
@@ -142,7 +143,7 @@ def check_top(data, i, j):
 def check_left(data, i, j):
     h, w = data.shape
     try:
-        indices = i * np.array(h) + np.arange(j - 1, -1, -1)
+        indices = i * np.array(w) + np.arange(j - 1, -1, -1)
     except ValueError:
         return None
 
@@ -156,7 +157,7 @@ def check_left(data, i, j):
 
 def check_right(data, i, j):
     h, w = data.shape
-    indices = i * np.array(h) + np.arange(j + 1, w)
+    indices = i * np.array(w) + np.arange(j + 1, w)
     if indices.size == 0:
         return None
 
