@@ -51,5 +51,5 @@ def main(input_txt):
 
 
 if __name__ == "__main__":
-    ans = main('./dummy.txt')
+    ans = main('./input.txt')
     print(f'Answer: {ans}')
