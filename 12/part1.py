@@ -45,7 +45,6 @@ def main(input_txt):
                 curr_inst = curr_dir
             dist[curr_inst] = dist[curr_inst] + ang_or_dist
 
-
     manhattan_dist = abs(dist['E'] - dist['W']) + abs(dist['N'] - dist['S'])
     return manhattan_dist
 
