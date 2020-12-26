@@ -1,14 +1,12 @@
 """
-File: part2.py
+File: part2.opt.py
 Author: Nrupatunga
 Email: nrupatunga.s@byjus.com
 Github: https://github.com/nrupatunga
-Description: finding the consecutive time stamps for bus ids
+Description: optimize implementation for part2
 """
-
 import fileinput
-
-import numpy as np
+from math import gcd
 
 
 def get_input(input_txt):
@@ -23,36 +21,23 @@ def get_input(input_txt):
     return timestamp, bus_ids, interval
 
 
+def lcm(a, b):
+    return (a * b) // gcd(a, b)
+
+
 def main(input_txt):
     _, bus_ids, interval = get_input(input_txt)
+    b_0 = bus_ids[0]
+    t = interval[0]
+    for diff, b in zip(interval[1:], bus_ids[1:]):
+        while True:
+            if (t + diff) % b == 0:
+                break
+            t = t + b_0
 
-    bus_ids = np.asarray(bus_ids)
-    interval = np.asarray(interval)
+        b_0 = lcm(b_0, b)
 
-    x = 100000000000000
-    step = 1e6
-    y = x + step
-
-    ids = [[]] * len(bus_ids)
-    num_step = 0
-    while True:
-        print(f'Iteration: {y}')
-        num = np.arange(x, y)
-        for i, den in enumerate(bus_ids):
-            output = num / den
-            diff = output - output.astype(np.int)
-            ids[i] = np.where(diff == 0) - interval[i]
-            ids[i] = ids[i].tolist()[0]
-
-        res = list(set.intersection(*map(set, ids))) 
-        if res:
-            break
-
-        x = y
-        y = x + step
-        num_step = num_step + 1
-
-    return int((res[0] + 1) + (num_step * step))
+    return t
 
 
 if __name__ == "__main__":
