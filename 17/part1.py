@@ -3,117 +3,71 @@ File: part1.py
 Author: Nrupatunga
 Email: nrupatunga.s@byjus.com
 Github: https://github.com/nrupatunga
-Description: 6 cycles cube lighting
+Description: counting the number of active cubes
 """
 
 import fileinput
-from collections import Counter
+from itertools import product
 
 
-def neighbors_coords(left, right):
-    neighbors = []
-    for i in range(left, right):
-        for j in range(left, right):
-            for k in range(left, right):
-                if i == 0 and j == 0 and k == 0:
-                    continue
-                neighbors.append([i, j, k])
-
-    return neighbors
+active_cubes = set()
 
 
-def find_xyz_range(z):
-    z_range = len(z)
-    y_range = len(z[0])
-    x_range = len(z[0][0])
-
-    return x_range, y_range, z_range
-
-
-def read_input(input_txt):
-    z = [[], [], []]
-    z_1 = []
-    for line in fileinput.input(input_txt):
+def get_active_cubes(input_file):
+    z = 0
+    for y, line in enumerate(fileinput.input(input_file)):
         line = line.rstrip()
-        row = []
-        for char in line:
-            if char == '.':
-                row.append(0)
-            else:
-                row.append(1)
-        z_1.append(row)
+        for x, char in enumerate(line):
+            if char == '#':
+                active_cubes.add((0, y, x))
 
-    row_len = len(z_1[0])
-    z_0 = [[0, 0, 0]] * row_len
-    z_2 = [[0, 0, 0]] * row_len
-
-    z[0] = z_0
-    z[1] = z_1
-    z[2] = z_2
-
-    return z
+    dim = len(line)
+    return active_cubes, dim
 
 
-def get_new_state(z, curr_coord, limits, coords):
-    i, j, k = curr_coord
-    curr_state = z[i][j][k]
-    x_r, y_r, z_r = limits
-    x_r, y_r, z_r = x_r - 1, y_r - 1, z_r - 1
-    vals = []
-    for n_1, n_2, n_3 in coords:
-        i_new, j_new, k_new = i + n_1, j + n_2, k + n_3
+def find_neighbors(cube, cube_dim):
+    for coord in product((-1, 0, 1), repeat=cube_dim):
+        if coord != (0, 0, 0):
+            new_coord = (cube[0] + coord[0], cube[1] + coord[1], cube[2] + coord[2])
+            yield new_coord
 
-        if i_new == i and j_new == j and k_new == k:
-            continue
+def update_active_cubes(active_cubes, ngbr, new_active_cubes, cube_dim):
+    curr_state = 0
+    if ngbr in active_cubes:
+        curr_state = 1
 
-        if i_new < 0 or j_new < 0 or k_new < 0:
-            continue
-        if i_new > z_r or j_new > y_r or k_new > x_r:
-            continue
+    num_actives = 0
+    for neighbor in find_neighbors(ngbr, cube_dim):
+        if neighbor in active_cubes:
+            num_actives += 1
 
-        vals.append(z[i_new][j_new][k_new])
+    if curr_state == 1 and  num_actives in [2, 3]:
+        new_active_cubes.add(ngbr)
 
-    __import__('pdb').set_trace()
-    counts = Counter(vals)
+    if curr_state == 0 and  num_actives == 3:
+        new_active_cubes.add(ngbr)
 
-    if curr_state == 1 and (counts[1] == 2 or counts[1] == 3):
-        new_state = 1
-    else:
-        new_state = 0
-
-    if curr_state == 0 and counts[1] == 3:
-        new_state = 1
-    else:
-        new_state = 0
-
-    return new_state
+    return new_active_cubes
 
 
-def get_new_z(z, x_r, y_r, z_r, neighbors):
-    __import__('pdb').set_trace()
-    for i in range(z_r):
-        for j in range(y_r):
-            for k in range(x_r):
-                new_state = get_new_state(
-                    z, (i, j, k), (x_r, y_r, z_r), neighbors)
-                z[i][j][k] = new_state
+def main(input_file, cube_dim=3):
+    active_cubes, dim = get_active_cubes(input_file)
+    for _ in range(6):
+        new_active_cubes = set()
+        for cube in active_cubes:
+            new_active_cubes = update_active_cubes(active_cubes, cube,
+                                                   new_active_cubes,
+                                                   cube_dim)
+            for ngbr in find_neighbors(cube, cube_dim):
+                new_active_cubes = update_active_cubes(active_cubes,
+                                                       ngbr,
+                                                       new_active_cubes,
+                                                       cube_dim)
+        active_cubes = new_active_cubes
 
-    return z
-
-
-def main(input_txt, dbg=True):
-    z = read_input(input_txt)
-    neighbors = neighbors_coords(-1, 2)
-    x_r, y_r, z_r = find_xyz_range(z)
-    for i in range(1):
-        z_new = get_new_z(z, x_r, y_r, z_r, neighbors)
-
-    if dbg:
-        import numpy as np
-        print(np.asarray(z))
-        print(np.asarray(z_new))
+    return len(new_active_cubes)
 
 
 if __name__ == "__main__":
-    ans = main('./dummy.txt')
+    ans = main('./input.txt')
     print(f'Answer: {ans}')
