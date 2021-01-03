@@ -10,6 +10,17 @@ coded after understanding it
 """
 
 import fileinput
+import time
+
+
+def profiler(method):
+    def wrapper_method(*arg, **kw):
+        t = time.time()
+        ret = method(*arg, **kw)
+        print('Method ' + method.__name__ + ' took : ' +
+              "{:2.5f}".format(time.time()-t) + ' sec')
+        return ret
+    return wrapper_method
 
 
 rules_dict = {}
@@ -43,7 +54,6 @@ def check_valid(line, rule_no):
         else:
             return -1
 
-    __import__('pdb').set_trace()
     for rule in rules.split('|'):
         match_len = 0
         for r_n in rule.strip().split(' '):
@@ -59,6 +69,7 @@ def check_valid(line, rule_no):
     return -1
 
 
+@profiler
 def main(input_file):
     ans = 0
     get_rules(input_file)
